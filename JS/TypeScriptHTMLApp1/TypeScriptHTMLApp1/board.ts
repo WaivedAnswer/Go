@@ -14,14 +14,42 @@
     }
 
     display() {
-        var displayString = "";
+        const canvas = <HTMLCanvasElement> document.getElementById("board");
+        var ctx = canvas.getContext("2d");
+        var boardImgHeight = canvas.height*0.8;
+        var boardImgWidth = canvas.width*0.8;
+        var boardXOffset = (canvas.width - boardImgWidth) / 2.0;
+        var boardYOffset = (canvas.height - boardImgHeight) / 2.0;
+
+        ctx.fillStyle = 'rgb(200, 0, 0)';
+        ctx.fillRect(boardXOffset, boardYOffset, boardImgWidth, boardImgHeight);
+
+        var stoneWidth = boardImgWidth / this.width;
+        var stoneHeight = boardImgHeight / this.height;
+
         for (let i = 0; i < this.values.length; i++) {
             for (let j = 0; j < this.values[i].length; j++) {
-                displayString += this.values[i][j].display();
+                switch (this.values[i][j].teamId) {
+                     case TeamIds.Black:
+                     {
+                         ctx.fillStyle = "rgb(0, 0, 0)";
+                         break;
+                     }
+                     case TeamIds.White:
+                     {
+                         ctx.fillStyle = "rgb(255, 255, 255)";
+                         break;
+                     }
+                     case TeamIds.None:
+                     {
+                         ctx.fillStyle = "rgba(0, 0, 0, 0)";
+                         break;
+                     }
+                }
+
+                ctx.fillRect(boardXOffset + j * stoneWidth, boardYOffset + i * stoneHeight, stoneWidth, stoneHeight);
             }
-            displayString += "\n";
         }
-        console.log(displayString);
     }
 
     isOccupied(x, y) {

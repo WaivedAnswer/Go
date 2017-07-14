@@ -100,3 +100,15 @@ ENV/
 
 # mkdocs documentation
 /site
+
+# visual user files
+*.suo
+*.user
+*.pdb
+*.dll
+*.cache
+bin/
+obj/
+*.js
+*.js.map
+

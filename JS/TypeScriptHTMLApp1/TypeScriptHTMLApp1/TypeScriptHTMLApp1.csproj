@@ -29,6 +29,7 @@
   <ItemGroup>
     <TypeScriptCompile Include="app.ts" />
     <TypeScriptCompile Include="board.ts" />
+    <TypeScriptCompile Include="BoardContainer.ts" />
     <TypeScriptCompile Include="Matrix.ts" />
     <TypeScriptCompile Include="Stone.ts" />
   </ItemGroup>

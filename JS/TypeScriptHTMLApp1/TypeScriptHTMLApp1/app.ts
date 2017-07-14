@@ -25,8 +25,13 @@ window.onload = () => {
     var el = document.getElementById('content');
     var greeter = new Greeter(el);
     greeter.start();
-    var board = new Board(9, 9);
-    board.display();
-    board.placeStone(0, 0, new Stone(TeamIds.Black));
-    board.display();
+    var board = new Board(9, 9); 
+    var boardContr = new BoardContainer(board);
+    const canvas = document.getElementById("boardCanvas") as HTMLCanvasElement;
+    board.display(canvas);
+    canvas.addEventListener("click", evt => {
+        boardContr.clickBoard(canvas, evt);
+        board.display(canvas);
+    });
+
 };

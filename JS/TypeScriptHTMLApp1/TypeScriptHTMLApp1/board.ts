@@ -3,15 +3,19 @@
     private values: Stone[][];
     height: number;
     width: number;
+    lastStone: Stone;
+    lastCaptureNumber:  number;
 
     constructor(height, width) {
         this.initialize(height, width);
-        this.height = height;
-        this.width = width;
     }
 
     initialize(height, width) {
         this.values = matrix(height, width, new Stone(TeamIds.None));
+        this.height = height;
+        this.width = width;
+        this.lastStone = null;
+        this.lastCaptureNumber = 0;
     }
 
     display(canvas) {
@@ -168,34 +172,51 @@
     }
 
     private removeGroupFromBoard(group) {
-        console.log("removing " + group.length + " stones")
+        //console.log("removing " + group.length + " stones")
         for (let stone of group) {
             this.removeStoneFromBoard(stone);
         }
     }
 
+    private isIllegalKoMove(capturedStones) {
+        if(this.lastCaptureNumber !== 1 || capturedStones.length !== 1 || capturedStones[0] !== this.lastStone)
+            return false;
+        return true;
+    }
     private updateBoardWithNewStone(x, y, stone) {
+        var newStone = new Stone(stone.teamId);
 
-        stone.y = y;
-        stone.x = x;
-        this.values[y][x] = stone;
+        newStone.setStoneCoordinates(x, y);
 
-        let capturedStones = this.getStonesForCapture(stone);
+        this.values[y][x] = newStone;
 
-        if (capturedStones.length > 0) {
-            this.removeGroupFromBoard(capturedStones);
-            console.log("Captured Stones! and Stone Placed:" + x + "," + y);
-            return true;
+        const capturedStones = this.getStonesForCapture(newStone);
+
+        if (capturedStones.length > 0 ) {
+            if (this.isIllegalKoMove(capturedStones)) {
+                alert("Illegal Ko Move");
+                this.removeStoneFromBoard(newStone);
+                return false;
+            } else {
+                this.removeGroupFromBoard(capturedStones);
+                //console.log("Captured Stones! and Stone Placed:" + x + "," + y);
+                this.lastCaptureNumber = capturedStones.length;
+                this.lastStone = newStone;
+                return true;
+            }
         }
-        var stoneGroup = new Array<Stone>();
-        stoneGroup.push(stone);
-        this.findConnectedStones(stone, stoneGroup);
+
+        const stoneGroup = new Array<Stone>();
+        stoneGroup.push(newStone);
+        this.findConnectedStones(newStone, stoneGroup);
 
         if (!this.doesGroupHaveLiberties(stoneGroup)) {
-            console.log("Illegal Move, ko is suicidal")
-            this.removeStoneFromBoard(stone);
+            alert("Illegal Move: Move is suicidal")
+            this.removeStoneFromBoard(newStone);
             return false;
         }
+        this.lastCaptureNumber = capturedStones.length;
+        this.lastStone = newStone;
         return true;
     }
 
@@ -205,7 +226,7 @@
 
     placeStone(x, y, stone) {
         if (this.isStonePlacementValid(x, y)) {
-            console.log("Invalid Placement:" + x + "," + y);
+            //console.log("Invalid Placement:" + x + "," + y);
             return false;
         }
         return this.updateBoardWithNewStone(x, y, stone);

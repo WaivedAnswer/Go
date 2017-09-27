@@ -4,7 +4,7 @@
     height: number;
     width: number;
     lastStone: Stone;
-    lastCaptureNumber:  number;
+    lastCaptureNumber: number;
 
     constructor(height, width) {
         this.initialize(height, width);
@@ -18,41 +18,72 @@
         this.lastCaptureNumber = 0;
     }
 
-    display(canvas) {
+    private drawBoard(ctx, offX, offY, height, width) {
+        ctx.fillStyle = 'rgb(222,184,135)';
+        ctx.fillRect(offX, offY, width, height);
+    }
+
+    private drawGridLines(ctx, offX, offY, stoneWidth, stoneHeight) {
+        //horizontal lines
+        for (let j = 0; j < this.height; j++) {
+            ctx.moveTo(offX + 0.5 * stoneWidth, offY + (j + 0.5) * stoneHeight);
+            ctx.lineTo(offX + (this.width - 0.5) * stoneWidth, offY + (j + 0.5) * stoneHeight);
+        }
+
+        //vertical lines
+        for (let i = 0; i < this.width; i++) {
+            ctx.moveTo(offX + (i + 0.5) * stoneWidth, offY + 0.5 * stoneHeight);
+            ctx.lineTo(offX + (i + 0.5) * stoneWidth, offY + (this.height - 0.5)*stoneHeight );
+        }
+
+
+
+        ctx.strokestyle = "rgb(255, 255, 255)";
+        ctx.stroke();
+    }
+
+    private drawStones(ctx, offX, offY, stoneWidth, stoneHeight) {
+        for (let i = 0; i < this.values.length; i++) {
+            for (let j = 0; j < this.values[i].length; j++) {
+                switch (this.values[i][j].teamId) {
+                    case TeamIds.Black:
+                        {
+                            ctx.fillStyle = "rgb(0, 0, 0)";
+                            break;
+                        }
+                    case TeamIds.White:
+                        {
+                            ctx.fillStyle = "rgb(255, 255, 255)";
+                            break;
+                        }
+                    case TeamIds.None:
+                        {
+                            ctx.fillStyle = "rgba(0, 0, 0, 0)";
+                            break;
+                        }
+                }
+
+                ctx.fillRect(offX + j * stoneWidth, offY + i * stoneHeight, stoneWidth, stoneHeight);
+            }
+        }
+    }
+
+    public display(canvas) {
         var ctx = canvas.getContext("2d");
         var boardImgHeight = canvas.height;
         var boardImgWidth = canvas.width;
         var boardXOffset = 0.0;
         var boardYOffset = 0.0;
 
-        ctx.fillStyle = 'rgb(222,184,135)';
-        ctx.fillRect(boardXOffset, boardYOffset, boardImgWidth, boardImgHeight);
+        this.drawBoard(ctx, boardXOffset, boardYOffset, boardImgHeight, boardImgWidth);
+        
         var stoneWidth = boardImgWidth / this.width;
         var stoneHeight = boardImgHeight / this.height;
 
-        for (let i = 0; i < this.values.length; i++) {
-            for (let j = 0; j < this.values[i].length; j++) {
-                switch (this.values[i][j].teamId) {
-                case TeamIds.Black:
-                {
-                    ctx.fillStyle = "rgb(0, 0, 0)";
-                    break;
-                }
-                case TeamIds.White:
-                {
-                    ctx.fillStyle = "rgb(255, 255, 255)";
-                    break;
-                }
-                case TeamIds.None:
-                {
-                    ctx.fillStyle = "rgba(0, 0, 0, 0)";
-                    break;
-                }
-                }
-
-                ctx.fillRect(boardXOffset + j * stoneWidth, boardYOffset + i * stoneHeight, stoneWidth, stoneHeight);
-            }
-        }
+        this.drawGridLines(ctx, boardXOffset, boardYOffset, stoneWidth, stoneHeight);
+        this.drawStones(ctx, boardXOffset, boardYOffset, stoneWidth, stoneHeight);
+        
+     
     }
 
     private isOccupied(x, y) {
@@ -62,11 +93,11 @@
     }
 
     private isWithinBounds(x, y) {
-        return (x <= this.width - 1 && x >= 0 && y <= this.height - 1 && y >= 0)
+        return (x <= this.width - 1 && x >= 0 && y <= this.height - 1 && y >= 0);
     }
 
     //can be null
-    getStone(x, y) {
+    private getStone(x, y) {
         if (this.isWithinBounds(x, y)) {
 
             return this.values[y][x];
@@ -179,7 +210,7 @@
     }
 
     private isIllegalKoMove(capturedStones) {
-        if(this.lastCaptureNumber !== 1 || capturedStones.length !== 1 || capturedStones[0] !== this.lastStone)
+        if (this.lastCaptureNumber !== 1 || capturedStones.length !== 1 || capturedStones[0] !== this.lastStone)
             return false;
         return true;
     }
@@ -192,7 +223,7 @@
 
         const capturedStones = this.getStonesForCapture(newStone);
 
-        if (capturedStones.length > 0 ) {
+        if (capturedStones.length > 0) {
             if (this.isIllegalKoMove(capturedStones)) {
                 alert("Illegal Ko Move");
                 this.removeStoneFromBoard(newStone);
@@ -224,7 +255,7 @@
         return (this.isOccupied(x, y) || !this.isWithinBounds(x, y));
     }
 
-    placeStone(x, y, stone) {
+    public placeStone(x, y, stone) {
         if (this.isStonePlacementValid(x, y)) {
             //console.log("Invalid Placement:" + x + "," + y);
             return false;

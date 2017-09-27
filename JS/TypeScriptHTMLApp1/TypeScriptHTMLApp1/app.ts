@@ -1,31 +1,23 @@
 ﻿class Greeter {
     element: HTMLElement;
     span: HTMLElement;
-    timerToken: number;
 
     constructor(element: HTMLElement) {
         this.element = element;
-        this.element.innerHTML += "The time is: ";
+        this.element.innerHTML += "Play a game of Go! ";
         this.span = document.createElement('span');
         this.element.appendChild(this.span);
-        this.span.innerText = new Date().toUTCString();
+        this.span.innerText = "Click On the Board to Start";
     }
 
-    start() {
-        this.timerToken = setInterval(() => this.span.innerHTML = new Date().toUTCString(), 500);
-    }
-
-    stop() {
-        clearTimeout(this.timerToken);
-    }
 
 }
 
 window.onload = () => {
     var el = document.getElementById('content');
     var greeter = new Greeter(el);
-    greeter.start();
-
+    var board = new Board(9, 9); 
+    var boardContr = new BoardContainer(board);
     const canvas = document.getElementById("boardCanvas") as HTMLCanvasElement;
     var boardContr = new BoardContainer(canvas);
     boardContr.displayBoard();

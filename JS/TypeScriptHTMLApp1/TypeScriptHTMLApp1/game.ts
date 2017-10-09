@@ -11,6 +11,12 @@
     }
 
     public process() {
+        var nextMove = this.CurrentPlayer.GetNextMove();
+        if (nextMove !== NullMove) {
+            if (this.boardContainer.placeStone(nextMove))
+                this.SwitchPlayer();
+        }
+            
     }
 
     public mainLoop = () => {
@@ -23,21 +29,24 @@
         this.boardContainer.displayBoard();
     }
 
-    private HandleBoardClick(evt) {
-        if (this.boardContainer.clickBoard(evt, this.CurrentPlayer))
-        {
-            if (this.CurrentPlayer === this.Player1) {
-                this.CurrentPlayer = this.Player2;
-            }
-            else {
-                this.CurrentPlayer = this.Player1;
-            }
-            //this.boardContainer.displayBoard();
+    private SwitchPlayer() {
+        if (this.CurrentPlayer === this.Player1) {
+            this.CurrentPlayer = this.Player2;
         }
+        else {
+            this.CurrentPlayer = this.Player1;
+        }
+    }
+
+    private HandleBoardClick(evt) {
+        if (!this.CurrentPlayer.CanClickControl())
+            return;
+        this.CurrentPlayer.SetNextMove(this.boardContainer.clickBoard(evt, this.CurrentPlayer));
     }
 
     private OnPass() {
         this.CurrentPlayer.passState = true;
+        this.SwitchPlayer();
         if (this.Player1.passState && this.Player2.passState) {
             alert("Game is completed, both players passed.");
             this.boardContainer.isClickable = false;

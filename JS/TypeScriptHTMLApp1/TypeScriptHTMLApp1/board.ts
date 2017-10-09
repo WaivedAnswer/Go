@@ -251,12 +251,19 @@
         return true;
     }
 
-    private isStonePlacementValid(x, y) {
+    private isStonePlacementInvalid(x, y) {
         return (this.isOccupied(x, y) || !this.isWithinBounds(x, y));
     }
 
+    public canPlaceStone(x, y) {
+        if (this.isStonePlacementInvalid(x, y)) {
+            return false;
+        }
+        return true;
+    }
+
     public placeStone(x, y, stone) {
-        if (this.isStonePlacementValid(x, y)) {
+        if (this.isStonePlacementInvalid(x, y)) {
             //console.log("Invalid Placement:" + x + "," + y);
             return false;
         }

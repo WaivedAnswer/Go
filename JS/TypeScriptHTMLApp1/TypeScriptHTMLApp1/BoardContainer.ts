@@ -41,14 +41,20 @@
         this.board.display(this.canvas);
     }
 
+    placeStone(move) {
+        return this.board.placeStone(move.boardCoordX, move.boardCoordY, new Stone(move.teamId));
+    }
+
+
     clickBoard(evt, currPlayer) {
         if (!this.isClickable)
-            return false;
+            return NullMove;
         var pos = this.getCanvasMousePos(this.canvas, evt);
         var boardCoord = this.getBoardCoordinateFromCanvasCoordinates(pos, this.canvas);
-        if (this.board.placeStone(boardCoord.x, boardCoord.y, new Stone(currPlayer.teamId))) {
-            return true;
-        }           
+        if (this.board.canPlaceStone(boardCoord.x, boardCoord.y)) {
+            return new Move(boardCoord.x, boardCoord.y, currPlayer.teamId);
+        }         
+        return NullMove;
     }
 
     resetGame() {

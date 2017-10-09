@@ -4,7 +4,7 @@
     private currStone: Stone;
     private passCount: number;
     private canvas: HTMLCanvasElement;
-    private isClickable: boolean;
+    isClickable: boolean;
 
     constructor(canvas) {
         this.canvas = canvas;
@@ -41,42 +41,14 @@
         this.board.display(this.canvas);
     }
 
-    clickBoard(evt) {
+    clickBoard(evt, currPlayer) {
         if (!this.isClickable)
-            return;
+            return false;
         var pos = this.getCanvasMousePos(this.canvas, evt);
         var boardCoord = this.getBoardCoordinateFromCanvasCoordinates(pos, this.canvas);
-        if (this.board.placeStone(boardCoord.x, boardCoord.y, this.currStone)) {
-            this.passCount = 0;
-            switch (this.currStone.teamId) {
-                case TeamIds.Black:
-                    this.currStone = new Stone(TeamIds.White);
-                    break;
-                case TeamIds.White:
-                default :
-                    this.currStone = new Stone(TeamIds.Black);
-                    break;
-
-            }
+        if (this.board.placeStone(boardCoord.x, boardCoord.y, new Stone(currPlayer.teamId))) {
+            return true;
         }           
-    }
-
-    passMove() {
-        this.passCount++;
-        if (this.passCount === 2) {
-            alert("Game is completed, both players passed.");
-            this.isClickable = false;
-        }
-
-        switch (this.currStone.teamId) {
-        case TeamIds.Black:
-            this.currStone = new Stone(TeamIds.White);
-            break;
-        case TeamIds.White:
-        default:
-            this.currStone = new Stone(TeamIds.Black);
-            break;
-        }
     }
 
     resetGame() {

@@ -112,3 +112,11 @@ obj/
 *.js
 *.js.map
 
+
+\.vs/slnx\.sqlite
+
+\.vs/ProjectSettings\.json
+
+JS/TypeScriptHTMLApp1/\.vs/config/applicationhost\.config
+
+*.config

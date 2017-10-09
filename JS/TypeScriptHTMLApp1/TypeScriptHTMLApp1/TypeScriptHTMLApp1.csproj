@@ -30,7 +30,10 @@
     <TypeScriptCompile Include="app.ts" />
     <TypeScriptCompile Include="board.ts" />
     <TypeScriptCompile Include="BoardContainer.ts" />
+    <TypeScriptCompile Include="game.ts" />
+    <TypeScriptCompile Include="IPlayer.ts" />
     <TypeScriptCompile Include="Matrix.ts" />
+    <TypeScriptCompile Include="HumanPlayer.ts" />
     <TypeScriptCompile Include="Stone.ts" />
   </ItemGroup>
   <ItemGroup>
@@ -53,7 +56,7 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>True</UseIIS>
+          <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>51992</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>

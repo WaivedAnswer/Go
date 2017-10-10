@@ -46,6 +46,11 @@
     }
 
 
+    getAvailableMoves(currPlayer) {
+        return this.board.getAvailableMoves(currPlayer.teamId);
+    }
+
+
     clickBoard(evt, currPlayer) {
         if (!this.isClickable)
             return NullMove;

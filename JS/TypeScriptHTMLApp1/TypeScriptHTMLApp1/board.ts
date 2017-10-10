@@ -255,6 +255,19 @@
         return (this.isOccupied(x, y) || !this.isWithinBounds(x, y));
     }
 
+    public getAvailableMoves(teamId) {
+        var moveList = [];
+        for (let i = 0; i < this.values.length; i++) {
+            for (let j = 0; j < this.values[i].length; j++) {
+                if (this.canPlaceStone(i, j))
+                {
+                    moveList.push(new Move(i, j, teamId));
+                }
+            }
+        }
+        return moveList;
+    }
+
     public canPlaceStone(x, y) {
         if (this.isStonePlacementInvalid(x, y)) {
             return false;

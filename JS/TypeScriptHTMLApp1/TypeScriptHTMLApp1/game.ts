@@ -5,6 +5,7 @@
     private Player1: IPlayer;
     private Player2: IPlayer;
     private CurrentPlayer: IPlayer;
+    private moveFailureCount: number;
 
     constructor(canvas) {
         this.initialize(canvas);
@@ -13,8 +14,19 @@
     public process() {
         var nextMove = this.CurrentPlayer.GetNextMove();
         if (nextMove !== NullMove) {
-            if (this.boardContainer.placeStone(nextMove))
+            if (this.boardContainer.placeStone(nextMove)) {
+                this.CurrentPlayer.passState = false;
+                this.moveFailureCount = 0;
                 this.SwitchPlayer();
+            }
+            else {
+                this.moveFailureCount++;
+                if (this.moveFailureCount > 5)
+                {
+                    this.CurrentPlayer.passState = true;
+                    this.SwitchPlayer();
+                }
+            }
         }
             
     }
@@ -53,12 +65,15 @@
         }
     }
 
+    private OnReset() {
+        this.CurrentPlayer = this.Player1;
+        this.moveFailureCount = 0;
+        this.boardContainer.resetGame();
+    }
+
     private initialize(canvas)
     {
-        this.Player1 = new HumanPlayer(TeamIds.White);
-        this.Player2 = new HumanPlayer(TeamIds.Black);
-        this.CurrentPlayer = this.Player1;
-
+        this.moveFailureCount = 0;
         this.canvas = canvas;
         this.boardContainer = new BoardContainer(this.canvas);
 
@@ -72,7 +87,11 @@
         }
         var bttn2 = document.getElementById("Button2");
         bttn2.onclick = () => {
-            this.boardContainer.resetGame();
+            this.OnReset();
         }   
+
+        this.Player1 = new HumanPlayer(TeamIds.White);
+        this.Player2 = new ComputerPlayer(TeamIds.Black, this.boardContainer);
+        this.CurrentPlayer = this.Player1;
     }
 }

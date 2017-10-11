@@ -11,24 +11,31 @@
         this.initialize(canvas);
     }
 
+
+    public makeMove(move) {
+        if (move == PassMove)
+        {
+            this.OnPass();
+        }
+        else if (this.boardContainer.placeStone(move)) {
+            this.CurrentPlayer.passState = false;
+            this.moveFailureCount = 0;
+            this.SwitchPlayer();
+        }
+        else {
+            this.moveFailureCount++;
+            if (this.moveFailureCount > 3) {
+                this.CurrentPlayer.passState = true;
+                this.SwitchPlayer();
+            }
+        }
+    }
+
     public process() {
         var nextMove = this.CurrentPlayer.GetNextMove();
         if (nextMove !== NullMove) {
-            if (this.boardContainer.placeStone(nextMove)) {
-                this.CurrentPlayer.passState = false;
-                this.moveFailureCount = 0;
-                this.SwitchPlayer();
-            }
-            else {
-                this.moveFailureCount++;
-                if (this.moveFailureCount > 5)
-                {
-                    this.CurrentPlayer.passState = true;
-                    this.SwitchPlayer();
-                }
-            }
+            this.makeMove(nextMove);
         }
-            
     }
 
     public mainLoop = () => {

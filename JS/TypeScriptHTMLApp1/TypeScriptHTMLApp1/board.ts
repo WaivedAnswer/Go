@@ -214,24 +214,24 @@
             return false;
         return true;
     }
-    private updateBoardWithNewStone(x, y, stone) {
-        var newStone = new Stone(stone.teamId);
+    private updateBoardWithMove(move) {
+        var newStone = new Stone(move.player.teamId);
 
-        newStone.setStoneCoordinates(x, y);
+        newStone.setStoneCoordinates(move.boardCoordX, move.boardCoordY);
 
-        this.values[y][x] = newStone;
+        this.values[move.boardCoordY][move.boardCoordX] = newStone;
 
         const capturedStones = this.getStonesForCapture(newStone);
 
         if (capturedStones.length > 0) {
             if (this.isIllegalKoMove(capturedStones)) {
-                alert("Illegal Ko Move");
                 this.removeStoneFromBoard(newStone);
                 return false;
             } else {
                 this.removeGroupFromBoard(capturedStones);
                 //console.log("Captured Stones! and Stone Placed:" + x + "," + y);
                 this.lastCaptureNumber = capturedStones.length;
+                move.player.score += this.lastCaptureNumber;
                 this.lastStone = newStone;
                 return true;
             }
@@ -242,7 +242,6 @@
         this.findConnectedStones(newStone, stoneGroup);
 
         if (!this.doesGroupHaveLiberties(stoneGroup)) {
-            alert("Illegal Move: Move is suicidal")
             this.removeStoneFromBoard(newStone);
             return false;
         }
@@ -255,32 +254,70 @@
         return (this.isOccupied(x, y) || !this.isWithinBounds(x, y));
     }
 
-    public getAvailableMoves(teamId) {
+    public getAvailableMoves(player) {
         var moveList = [];
         for (let i = 0; i < this.values.length; i++) {
             for (let j = 0; j < this.values[i].length; j++) {
-                if (this.canPlaceStone(i, j))
+                if (this.canPlaceStone(i, j, player.teamId, false))
                 {
-                    moveList.push(new Move(i, j, teamId));
+                    moveList.push(new Move(i, j, player));
                 }
             }
         }
         return moveList;
     }
 
-    public canPlaceStone(x, y) {
-        if (this.isStonePlacementInvalid(x, y)) {
+
+    public isIllegalMove(x, y, teamId, shouldNotify){
+        var newStone = new Stone(teamId);
+
+        newStone.setStoneCoordinates(x, y);
+        const oldStone = this.values[y][x];
+        this.values[y][x] = newStone;
+
+        const capturedStones = this.getStonesForCapture(newStone);
+
+        if (capturedStones.length > 0) {
+            if (this.isIllegalKoMove(capturedStones)) {
+                //illegal ko
+                if (shouldNotify) {
+                    alert("Illegal Ko Move");
+                }
+                this.values[y][x] = oldStone;
+                return true;
+            }
+            return false;
+         }
+
+        const stoneGroup = new Array<Stone>();
+        stoneGroup.push(newStone);
+        this.findConnectedStones(newStone, stoneGroup);
+
+        if (!this.doesGroupHaveLiberties(stoneGroup)) {
+            //illegal suicidal
+            if (shouldNotify) {
+                alert("Illegal Move: Move is suicidal")
+            }
+            this.values[y][x] = oldStone;
+            return true;
+        }
+        this.values[y][x] = oldStone;
+        return false;
+    }
+
+    public canPlaceStone(x, y, teamId, shouldNotify) {
+        if (this.isStonePlacementInvalid(x, y) || this.isIllegalMove(x, y, teamId, shouldNotify)) {
             return false;
         }
         return true;
     }
 
-    public placeStone(x, y, stone) {
-        if (this.isStonePlacementInvalid(x, y)) {
+    public placeStone(move) {
+        if (this.isStonePlacementInvalid(move.boardCoordX, move.boardCoordY)) {
             //console.log("Invalid Placement:" + x + "," + y);
             return false;
         }
-        return this.updateBoardWithNewStone(x, y, stone);
+        return this.updateBoardWithMove(move);
 
     }
 }

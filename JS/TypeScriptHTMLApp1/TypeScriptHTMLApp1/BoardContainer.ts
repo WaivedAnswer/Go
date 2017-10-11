@@ -42,12 +42,12 @@
     }
 
     placeStone(move) {
-        return this.board.placeStone(move.boardCoordX, move.boardCoordY, new Stone(move.teamId));
+        return this.board.placeStone(move);
     }
 
 
     getAvailableMoves(currPlayer) {
-        return this.board.getAvailableMoves(currPlayer.teamId);
+        return this.board.getAvailableMoves(currPlayer);
     }
 
 
@@ -56,8 +56,8 @@
             return NullMove;
         var pos = this.getCanvasMousePos(this.canvas, evt);
         var boardCoord = this.getBoardCoordinateFromCanvasCoordinates(pos, this.canvas);
-        if (this.board.canPlaceStone(boardCoord.x, boardCoord.y)) {
-            return new Move(boardCoord.x, boardCoord.y, currPlayer.teamId);
+        if (this.board.canPlaceStone(boardCoord.x, boardCoord.y, currPlayer.teamId, true)) {
+            return new Move(boardCoord.x, boardCoord.y, currPlayer);
         }         
         return NullMove;
     }

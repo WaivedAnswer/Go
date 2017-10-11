@@ -28,8 +28,7 @@
         var moves = this.boardContainer.getAvailableMoves(this);
         if (moves.length === 0)
         {
-            this.passState = true;
-            return NullMove;
+            return PassMove;
         }
         return moves[Math.floor(Math.random() * moves.length)];
     }

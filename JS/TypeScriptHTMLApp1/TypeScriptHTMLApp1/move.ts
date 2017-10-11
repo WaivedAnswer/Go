@@ -1,16 +1,17 @@
 ﻿class Move {
     boardCoordX: number;
     boardCoordY: number;
-    teamId: TeamIds;
+    player: IPlayer;
 
-    constructor(boardCoordX, boardCoordY, teamId)
+    constructor(boardCoordX, boardCoordY, player)
     {
         this.boardCoordX = boardCoordX;
         this.boardCoordY = boardCoordY;
-        this.teamId = teamId;
+        this.player = player;
     }
 
 
 }
 
-var NullMove = new Move(-1, -1, TeamIds.None);
+var NullMove = new Move(-1, -1, new NullPlayer());
+var PassMove = new Move(-2, -2, new NullPlayer());

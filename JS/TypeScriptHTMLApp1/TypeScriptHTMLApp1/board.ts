@@ -286,6 +286,7 @@
                 this.values[y][x] = oldStone;
                 return true;
             }
+            this.values[y][x] = oldStone;
             return false;
          }
 

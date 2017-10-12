@@ -2,6 +2,7 @@
     
     private boardContainer: BoardContainer;
     private canvas: HTMLCanvasElement;
+    private scoreBoardCanvas: HTMLCanvasElement;
     private Player1: IPlayer;
     private Player2: IPlayer;
     private CurrentPlayer: IPlayer;
@@ -40,12 +41,23 @@
 
     public mainLoop = () => {
         this.process();
-        this.boardContainer.displayBoard();
+        this.display();
         requestAnimationFrame(this.mainLoop);
     }
 
     public display() {
         this.boardContainer.displayBoard();
+        this.displayScoreBoard();
+    }
+
+    private displayScoreBoard() {
+        var ctx = this.scoreBoardCanvas.getContext("2d");
+        ctx.fillStyle = 'rgb(255,255,255)';
+        ctx.fillRect(0, 0, 200, 400);
+        ctx.font = "16px Arial";
+        ctx.fillStyle = "#000000";
+        ctx.fillText(this.Player1.name + " Score: " + this.Player1.score, 8, 20);
+        ctx.fillText(this.Player2.name + " Score: " + this.Player2.score, 8, 60)
     }
 
     private SwitchPlayer() {
@@ -73,6 +85,8 @@
     }
 
     private OnReset() {
+        this.Player1.ResetState();
+        this.Player2.ResetState();
         this.CurrentPlayer = this.Player1;
         this.moveFailureCount = 0;
         this.boardContainer.resetGame();
@@ -83,6 +97,8 @@
         this.moveFailureCount = 0;
         this.canvas = canvas;
         this.boardContainer = new BoardContainer(this.canvas);
+
+        this.scoreBoardCanvas = document.getElementById("scoreboardCanvas") as HTMLCanvasElement;
 
         canvas.addEventListener("click", evt => {
             this.HandleBoardClick(evt);
@@ -95,10 +111,10 @@
         var bttn2 = document.getElementById("Button2");
         bttn2.onclick = () => {
             this.OnReset();
-        }   
+        }
 
-        this.Player1 = new HumanPlayer(TeamIds.White);
-        this.Player2 = new ComputerPlayer(TeamIds.Black, this.boardContainer);
+        this.Player1 = new HumanPlayer(TeamIds.White, "Bob");
+        this.Player2 = new ComputerPlayer(TeamIds.Black, this.boardContainer, "AlphaAlphaGo");
         this.CurrentPlayer = this.Player1;
     }
 }

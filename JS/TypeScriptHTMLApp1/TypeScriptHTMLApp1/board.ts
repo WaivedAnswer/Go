@@ -142,7 +142,7 @@
         var capturedStones = new Array<Stone>();
         var adjStones = this.getAdjacentStones(lastStone);
         for (let adj of adjStones) {
-            if (adj.teamId === this.getOpposingTeamId(lastStone.teamId)) {
+            if (adj.teamId === this.getOpposingTeamId(lastStone.teamId) && !capturedStones.some(x=>x===adj)) {
                 let adjGroup = new Array<Stone>();
                 adjGroup.push(adj);
                 this.findConnectedStones(adj, adjGroup);

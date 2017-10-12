@@ -1,4 +1,10 @@
 ﻿class NullPlayer implements IPlayer {
+
+    name: string;
+
+    ResetState() {
+    }
+
     CanClickControl() {
         return false;
     }

@@ -79,9 +79,26 @@
         this.CurrentPlayer.passState = true;
         this.SwitchPlayer();
         if (this.Player1.passState && this.Player2.passState) {
-            alert("Game is completed, both players passed.");
-            this.boardContainer.isClickable = false;
+            this.OnEndGame();
         }
+    }
+
+    private GetWinner()
+    {
+        if (this.Player1.score > this.Player2.score)
+            return this.Player1.name;
+        else if ( this.Player1.score === this.Player2.score)
+        {
+            return "Nobody";
+        }
+        else {
+            return this.Player2.name;
+        }
+    }
+
+    private OnEndGame() {
+        alert("Game is completed, " + this.GetWinner() + " wins.");
+        this.boardContainer.isClickable = false;
     }
 
     private OnReset() {

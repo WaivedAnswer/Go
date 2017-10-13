@@ -3,116 +3,113 @@
     private boardContainer: BoardContainer;
     private canvas: HTMLCanvasElement;
     private scoreBoardCanvas: HTMLCanvasElement;
-    private Player1: IPlayer;
-    private Player2: IPlayer;
-    private CurrentPlayer: IPlayer;
+    private player1: IPlayer;
+    private player2: IPlayer;
+    private currentPlayer: IPlayer;
     private moveStack: MoveStack;
 
     constructor(canvas) {
         this.initialize(canvas);
     }
 
-    private OnUndo() {
+    undo() {
         if (this.moveStack.isEmpty())
             return;
-        var lastMove = this.moveStack.pop();
-        lastMove.Undo();
-        this.SwitchPlayer();
+        const lastMove = this.moveStack.pop();
+        lastMove.undo();
+        this.switchPlayer();
     }
 
 
-    private OnMoveSuccess() {
-        if (this.Player1.passState && this.Player2.passState) {
-            this.OnEndGame();
+    private onMoveSuccess(move) {
+        if (this.player1.passState && this.player2.passState) {
+            this.onEndGame();
         }
-        this.SwitchPlayer();
+        this.moveStack.push(move);
+        this.switchPlayer();
     }
 
-    public makeMove(move) {
-        if (move.IsUndo()) {
-            this.OnUndo();
-        }
-        else if (move.Execute()) {
-            this.OnMoveSuccess();
-            this.moveStack.push(move);
+    makeMove(move) {
+        if (move.execute()) {
+            this.onMoveSuccess(move);
         }
     }
 
-    public process() {
-        var nextMove = this.CurrentPlayer.GetNextMove();
+    process() {
+        const nextMove = this.currentPlayer.getNextMove();
         this.makeMove(nextMove);
     }
 
-    public mainLoop = () => {
+    mainLoop = () => {
         this.process();
         this.display();
         requestAnimationFrame(this.mainLoop);
     }
 
-    public display() {
+    display() {
         this.boardContainer.displayBoard();
         this.displayScoreBoard();
     }
 
     private displayScoreBoard() {
-        var ctx = this.scoreBoardCanvas.getContext("2d");
-        ctx.fillStyle = 'rgb(255,255,255)';
+        const ctx = this.scoreBoardCanvas.getContext("2d");
+        ctx.fillStyle = "rgb(255,255,255)";
         ctx.fillRect(0, 0, 200, 400);
         ctx.font = "16px Arial";
         ctx.fillStyle = "#000000";
-        ctx.fillText(this.Player1.name + " Score: " + this.Player1.score, 8, 20);
-        ctx.fillText(this.Player2.name + " Score: " + this.Player2.score, 8, 60)
+        ctx.fillText(this.player1.name + " Score: " + this.player1.score, 8, 20);
+        ctx.fillText(this.player2.name + " Score: " + this.player2.score, 8, 60);
     }
 
-    private SwitchPlayer() {
-        if (this.CurrentPlayer === this.Player1) {
-            this.CurrentPlayer = this.Player2;
+    private switchPlayer() {
+        if (this.currentPlayer === this.player1) {
+            this.currentPlayer = this.player2;
         }
         else {
-            this.CurrentPlayer = this.Player1;
+            this.currentPlayer = this.player1;
         }
     }
 
-    private HandleBoardClick(evt) {
-        if (!this.CurrentPlayer.CanClickControl())
+    private handleBoardClick(evt) {
+        if (!this.currentPlayer.canClickControl())
             return;
-        this.CurrentPlayer.SetNextMove(this.boardContainer.clickBoard(evt, this.CurrentPlayer));
+        this.currentPlayer.setNextMove(this.boardContainer.clickBoard(evt, this.currentPlayer));
     }
 
-    private GetWinner() {
-        if (this.Player1.score > this.Player2.score)
-            return this.Player1.name;
-        else if (this.Player1.score === this.Player2.score) {
+    private getWinner() {
+        if (this.player1.score > this.player2.score)
+            return this.player1.name;
+        else if (this.player1.score === this.player2.score) {
             return "Nobody";
         }
         else {
-            return this.Player2.name;
+            return this.player2.name;
         }
     }
 
-    private OnEndGame() {
-        alert("Game is completed, " + this.GetWinner() + " wins.");
+    private onEndGame() {
+        alert(`Game is completed, ${this.getWinner()} wins.`);
         this.boardContainer.isClickable = false;
     }
 
-    private OnReset() {
+    private onReset() {
         this.moveStack = new MoveStack();
-        this.Player1.ResetState();
-        this.Player2.ResetState();
-        this.CurrentPlayer = this.Player1;
+        this.player1.resetState();
+        this.player2.resetState();
+        this.currentPlayer = this.player1;
         this.boardContainer.resetGame();
     }
 
-    private OnPassClick() {
-        if (!this.CurrentPlayer.CanClickControl())
+    private onPassClick() {
+        if (!this.currentPlayer.canClickControl())
             return;
-        this.CurrentPlayer.SetNextMove(new PassMove(this.CurrentPlayer));
+        this.currentPlayer.setNextMove(new PassMove(this.currentPlayer));
     }
 
-    private OnUndoClick() {
-        if (!this.CurrentPlayer.CanClickControl())
+    private onUndoClick() {
+        if (!this.currentPlayer.canClickControl())
             return;
-        this.CurrentPlayer.SetNextMove(new UndoMove());
+        this.undo();
     }
 
     private initialize(canvas) {
@@ -123,25 +120,25 @@
         this.scoreBoardCanvas = document.getElementById("scoreboardCanvas") as HTMLCanvasElement;
 
         canvas.addEventListener("click", evt => {
-            this.HandleBoardClick(evt);
+            this.handleBoardClick(evt);
         });
 
-        var bttn = document.getElementById("Button1");
+        const bttn = document.getElementById("Button1");
         bttn.onclick = () => {
-            this.OnPassClick();
+            this.onPassClick();
         }
-        var bttn2 = document.getElementById("Button2");
+        const bttn2 = document.getElementById("Button2");
         bttn2.onclick = () => {
-            this.OnReset();
+            this.onReset();
         }
-        var bttn2 = document.getElementById("Button3");
-        bttn2.onclick = () => {
-            this.OnUndoClick();
+        const bttn3 = document.getElementById("Button3");
+        bttn3.onclick = () => {
+            this.onUndoClick();
         }
 
-        this.Player1 = new HumanPlayer(TeamIds.White, "Bob");
-        this.Player2 = new HumanPlayer(TeamIds.Black, "Bob2");
+        this.player1 = new HumanPlayer(TeamIds.White, "Bob");
+        this.player2 = new HumanPlayer(TeamIds.Black, "Bob2");
         //this.Player2 = new ComputerPlayer(TeamIds.Black, this.boardContainer, "AlphaAlphaGo");
-        this.CurrentPlayer = this.Player1;
+        this.currentPlayer = this.player1;
     }
 }

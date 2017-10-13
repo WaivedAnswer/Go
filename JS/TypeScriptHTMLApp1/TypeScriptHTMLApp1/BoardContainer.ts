@@ -19,7 +19,7 @@
     }
 
     private getCanvasMousePos(canvas, evt) {
-        var rect = canvas.getBoundingClientRect();
+        const rect = canvas.getBoundingClientRect();
         return {
             x: evt.clientX - rect.left,
             y: evt.clientY - rect.top
@@ -41,14 +41,40 @@
         this.board.display(this.canvas);
     }
 
-    placeStone(move) {
-        return this.board.placeStone(move);
+    resetStone(stone) {
+        const coords = stone.getStoneCoordinates();
+
+        this.board.setStone(coords.x, coords.y, TeamIds.None);
     }
 
+    playMove(move) {
+        const originalScore = move.player.score;
+        move.memento.prevLastStone = this.board.lastStone;
+        move.memento.prevLastCapturedStones = this.board.lastCapturedStones;
+        if (this.board.playMove(move)) {
+            move.memento.placedStone = this.board.lastStone;
+            move.memento.capturedStones = this.board.lastCapturedStones;
+            move.memento.scoreChange = move.player.score - originalScore;
+            return true;
+        }
+        return false;
+    }
+
+    setLastStone(lastStone) {
+        this.board.lastStone = lastStone;
+    }
+
+    setLastCapturedStones(lastCapturedStones) {
+        this.board.lastCapturedStones = lastCapturedStones;
+    }
+
+    setStone(x, y, teamId) {
+        return this.board.setStone(x, y, teamId);
+    }
 
     getAvailableMoves(currPlayer) {
         
-        var moveList = [];
+        const moveList = [];
         for (let i = 0; i < this.board.height; i++) {
             for (let j = 0; j < this.board.width; j++) {
                 if (this.board.canPlaceStone(i, j, currPlayer.teamId, false)) {
@@ -63,8 +89,8 @@
     clickBoard(evt, currPlayer) {
         if (!this.isClickable)
             return new NullMove();
-        var pos = this.getCanvasMousePos(this.canvas, evt);
-        var boardCoord = this.getBoardCoordinateFromCanvasCoordinates(pos, this.canvas);
+        const pos = this.getCanvasMousePos(this.canvas, evt);
+        const boardCoord = this.getBoardCoordinateFromCanvasCoordinates(pos, this.canvas);
         if (this.board.canPlaceStone(boardCoord.x, boardCoord.y, currPlayer.teamId, true)) {
             return new Move(boardCoord.x, boardCoord.y, currPlayer, this);
         }         

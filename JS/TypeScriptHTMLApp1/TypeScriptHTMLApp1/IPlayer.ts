@@ -1,10 +1,10 @@
 ﻿interface IPlayer {
-    CanClickControl();
+    canClickControl();
     name: string;
     teamId: TeamIds;
     score: number;
     passState: boolean;
-    SetNextMove(move: IMove);
-    GetNextMove();
-    ResetState();
+    setNextMove(move: IMove);
+    getNextMove();
+    resetState();
 }

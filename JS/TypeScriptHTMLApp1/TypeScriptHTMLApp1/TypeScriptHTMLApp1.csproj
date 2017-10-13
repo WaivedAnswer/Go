@@ -36,12 +36,12 @@
     <TypeScriptCompile Include="Matrix.ts" />
     <TypeScriptCompile Include="HumanPlayer.ts" />
     <TypeScriptCompile Include="move.ts" />
+    <TypeScriptCompile Include="MoveMemento.ts" />
     <TypeScriptCompile Include="MoveStack.ts" />
     <TypeScriptCompile Include="NullMove.ts" />
     <TypeScriptCompile Include="NullPlayer.ts" />
     <TypeScriptCompile Include="PassMove.ts" />
     <TypeScriptCompile Include="Stone.ts" />
-    <TypeScriptCompile Include="UndoMove.ts" />
   </ItemGroup>
   <ItemGroup>
     <None Include="web.Debug.config">

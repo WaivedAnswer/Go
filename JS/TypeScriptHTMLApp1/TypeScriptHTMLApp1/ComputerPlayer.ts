@@ -1,11 +1,11 @@
 ﻿class ComputerPlayer implements IPlayer {
 
-    ResetState() {
+    resetState() {
         this.score = 0;
         this.passState = false;
     }
 
-    CanClickControl() {
+    canClickControl() {
         return false;
     }
 
@@ -14,7 +14,7 @@
     }
 
     initialize(teamId, boardContainer, name) {
-        this.ResetState();
+        this.resetState();
         this.teamId = teamId;
         this.boardContainer = boardContainer;
         this.name = name;
@@ -27,12 +27,12 @@
     name: string;
 
 
-    SetNextMove(move: Move) {
+    setNextMove(move: Move) {
         console.log("Cannot set a Computer Player's next Move");
     }
 
-    GetNextMove() {
-        var moves = this.boardContainer.getAvailableMoves(this);
+    getNextMove() {
+        const moves = this.boardContainer.getAvailableMoves(this);
         if (moves.length === 0) {
             return new PassMove(this);
         }

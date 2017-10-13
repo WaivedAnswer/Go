@@ -1,34 +1,34 @@
 ﻿class MoveStack {
 
-    private _topNode: MoveNode = undefined;
-    private _count: number = 0;
+    private topNode: MoveNode = undefined;
+    private count = 0;
 
-    public count(): number {
-        return this._count;
+    length(): number {
+        return this.count;
     }
 
-    public isEmpty(): boolean {
-        return this._topNode === undefined;
+    isEmpty(): boolean {
+        return this.topNode === undefined;
     }
 
-    public push(value: Move): void {
+    push(value: Move): void {
         // create a new Node and add it to the top
-        let node = new MoveNode(value, this._topNode);
-        this._topNode = node;
-        this._count++;
+        const node = new MoveNode(value, this.topNode);
+        this.topNode = node;
+        this.count++;
     }
 
-    public pop(): Move {
+    pop(): Move {
         // remove the top node from the stack.
         // the node at the top now is the one before it
-        let poppedNode = this._topNode;
-        this._topNode = poppedNode.previous;
-        this._count--;
+        const poppedNode = this.topNode;
+        this.topNode = poppedNode.previous;
+        this.count--;
         return poppedNode.data;
     }
 
-    public peek(): Move {
-        return this._topNode.data;
+    peek(): Move {
+        return this.topNode.data;
     }
 
 }

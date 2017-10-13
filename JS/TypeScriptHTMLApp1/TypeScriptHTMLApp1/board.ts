@@ -4,7 +4,7 @@
     height: number;
     width: number;
     lastStone: Stone;
-    lastCaptureNumber: number;
+    lastCapturedStones: Array<Stone>;
 
     constructor(height, width) {
         this.initialize(height, width);
@@ -15,7 +15,7 @@
         this.height = height;
         this.width = width;
         this.lastStone = null;
-        this.lastCaptureNumber = 0;
+        this.lastCapturedStones = new Array<Stone>();
     }
 
     private drawBoard(ctx, offX, offY, height, width) {
@@ -68,7 +68,7 @@
         }
     }
 
-    public display(canvas) {
+    display(canvas) {
         var ctx = canvas.getContext("2d");
         var boardImgHeight = canvas.height;
         var boardImgWidth = canvas.width;
@@ -129,34 +129,34 @@
         return adjacentStones;
     }
 
-    private getOpposingTeamId(teamID) {
-        if (teamID === TeamIds.Black)
+    private getOpposingTeamId(teamId) {
+        if (teamId === TeamIds.Black)
             return TeamIds.White;
-        else if (teamID === TeamIds.White)
+        else if (teamId === TeamIds.White)
             return TeamIds.Black;
         else
             return TeamIds.None;
     }
 
     private getStonesForCapture(lastStone) {
-        var capturedStones = new Array<Stone>();
-        var adjStones = this.getAdjacentStones(lastStone);
+        let capturedStones = new Array<Stone>();
+        const adjStones = this.getAdjacentStones(lastStone);
         for (let adj of adjStones) {
             if (adj.teamId === this.getOpposingTeamId(lastStone.teamId) && !capturedStones.some(x=>x===adj)) {
-                let adjGroup = new Array<Stone>();
+                const adjGroup = new Array<Stone>();
                 adjGroup.push(adj);
                 this.findConnectedStones(adj, adjGroup);
-                console.log("adjgroup is " + adjGroup.length + " long")
+                console.log(`adjgroup is ${adjGroup.length} long`);
 
                 if (!this.doesGroupHaveLiberties(adjGroup)) {
                     capturedStones = capturedStones.concat(adjGroup);
-                    console.log(capturedStones.length, adjGroup.length)
+                    console.log(capturedStones.length, adjGroup.length);
                 } else {
                     console.log("group is free!");
                 }
             }
         }
-        console.log("There are" + capturedStones.length + " stones to capture")
+        console.log(`There are${capturedStones.length} stones to capture`);
         return capturedStones;
     }
 
@@ -198,7 +198,7 @@
         return false;
     }
 
-    private removeStoneFromBoard(stone) {
+    removeStoneFromBoard(stone) {
         stone.teamId = TeamIds.None;
     }
 
@@ -210,12 +210,12 @@
     }
 
     private isIllegalKoMove(capturedStones) {
-        if (this.lastCaptureNumber !== 1 || capturedStones.length !== 1 || capturedStones[0] !== this.lastStone)
+        if (this.lastCapturedStones.length !== 1 || capturedStones.length !== 1 || capturedStones[0] !== this.lastStone)
             return false;
         return true;
     }
     private updateBoardWithMove(move) {
-        var newStone = new Stone(move.player.teamId);
+        const newStone = new Stone(move.player.teamId);
 
         newStone.setStoneCoordinates(move.boardCoordX, move.boardCoordY);
 
@@ -230,8 +230,8 @@
             } else {
                 this.removeGroupFromBoard(capturedStones);
                 //console.log("Captured Stones! and Stone Placed:" + x + "," + y);
-                this.lastCaptureNumber = capturedStones.length;
-                move.player.score += this.lastCaptureNumber;
+                this.lastCapturedStones = capturedStones;
+                move.player.score += this.lastCapturedStones.length;
                 this.lastStone = newStone;
                 return true;
             }
@@ -245,7 +245,7 @@
             this.removeStoneFromBoard(newStone);
             return false;
         }
-        this.lastCaptureNumber = capturedStones.length;
+        this.lastCapturedStones = capturedStones;
         this.lastStone = newStone;
         return true;
     }
@@ -254,8 +254,8 @@
         return (this.isOccupied(x, y) || !this.isWithinBounds(x, y));
     }
 
-    public isIllegalMove(x, y, teamId, shouldNotify){
-        var newStone = new Stone(teamId);
+    isIllegalMove(x, y, teamId, shouldNotify){
+        const newStone = new Stone(teamId);
 
         newStone.setStoneCoordinates(x, y);
         const oldStone = this.values[y][x];
@@ -283,7 +283,7 @@
         if (!this.doesGroupHaveLiberties(stoneGroup)) {
             //illegal suicidal
             if (shouldNotify) {
-                alert("Illegal Move: Move is suicidal")
+                alert("Illegal Move: Move is suicidal");
             }
             this.values[y][x] = oldStone;
             return true;
@@ -292,19 +292,23 @@
         return false;
     }
 
-    public canPlaceStone(x, y, teamId, shouldNotify) {
+    canPlaceStone(x, y, teamId, shouldNotify) {
         if (this.isStonePlacementInvalid(x, y) || this.isIllegalMove(x, y, teamId, shouldNotify)) {
             return false;
         }
         return true;
     }
 
-    public placeStone(move) {
+    playMove(move) {
         if (this.isStonePlacementInvalid(move.boardCoordX, move.boardCoordY)) {
             //console.log("Invalid Placement:" + x + "," + y);
             return false;
         }
         return this.updateBoardWithMove(move);
 
+    }
+
+    setStone(x, y, teamId) {
+        this.values[y][x].teamId = teamId;
     }
 }

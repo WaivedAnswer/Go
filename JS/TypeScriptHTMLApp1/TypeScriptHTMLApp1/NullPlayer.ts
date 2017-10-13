@@ -2,18 +2,18 @@
 
     name: string;
 
-    ResetState() {
+    resetState() {
     }
 
-    CanClickControl() {
+    canClickControl() {
         return false;
     }
     teamId: TeamIds;
     score: number;
     passState: boolean;
-    SetNextMove(move: IMove) {
+    setNextMove(move: IMove) {
     }
-    GetNextMove() {
+    getNextMove() {
         return new NullMove();
     }
 }

@@ -1,19 +1,18 @@
 ﻿class PassMove implements IMove {
-    IsUndo() {
-        return false;
-    }
 
     player: IPlayer;
-
+    moveMemento: MoveMemento;
     constructor (player){
         this.player = player;
+        this.moveMemento = new MoveMemento();
     }
-    Execute() {
+    execute() {
+        this.moveMemento.prevPassState = this.player.passState;
         this.player.passState = true;
         return true;
     }
-    Undo() {
-        this.player.passState = false;
+    undo() {
+        this.player.passState = this.moveMemento.prevPassState;
     }
 
 }

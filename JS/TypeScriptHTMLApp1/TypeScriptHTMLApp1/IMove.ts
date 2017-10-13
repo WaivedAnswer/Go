@@ -1,7 +1,6 @@
 ﻿interface IMove {
     player: IPlayer;
 
-    Execute();
-    Undo();
-    IsUndo();
+    execute();
+    undo();
 }

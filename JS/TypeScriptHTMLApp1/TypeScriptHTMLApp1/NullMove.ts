@@ -1,13 +1,10 @@
 ﻿class NullMove implements IMove {
-    IsUndo() {
-        return false;
-    }
 
     player: IPlayer;
-    Execute() {
+    execute() {
         return false;
     }
-    Undo() {
+    undo() {
     }
 
 }

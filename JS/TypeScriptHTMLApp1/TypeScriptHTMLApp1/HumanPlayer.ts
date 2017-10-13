@@ -1,24 +1,24 @@
 ﻿class HumanPlayer implements IPlayer {
 
 
-    ResetState() {
+    resetState() {
         this.score = 0;
         this.passState = false;
     }
 
 
-    SetNextMove(move: Move) {
+    setNextMove(move: Move) {
         this.nextMove = move;
     }
 
-    GetNextMove() {
-        var nextMove = this.nextMove;
+    getNextMove() {
+        const nextMove = this.nextMove;
         this.nextMove = new NullMove();
         return nextMove;
     }
 
 
-    CanClickControl() {
+    canClickControl() {
         return true;
     }
 

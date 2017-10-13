@@ -37,7 +37,7 @@
 
 
     setNextMove(move: Move) {
-        console.log("Cannot set a Computer Player's next Move");
+        alert("Cannot set a Computer Player's next Move");
     }
 
     getNextMove() {

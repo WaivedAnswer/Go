@@ -9,6 +9,7 @@
     private moveStack: MoveStack;
     private isGamePlayable: boolean;
     private currAiStrategy: IMoveStrategy;
+    private preventEnd: boolean;
 
     constructor(canvas) {
         this.initialize(canvas);
@@ -31,8 +32,12 @@
         this.switchPlayer();
     }
 
-    getAvailableMoves(player) {
+    getAvailableMoves(player: IPlayer) {
         return this.boardContainer.getAvailableMoves(player);
+    }
+
+    getCurrentPlayer() {
+        return this.currentPlayer;
     }
 
     makeMove(move) {
@@ -96,14 +101,20 @@
             return this.player2.name;
         }
     }
+    setPreventEnd(prevent) {
+        this.preventEnd = prevent;
+    }
 
     private onEndGame() {
+        if (this.preventEnd)
+            return;
         alert(`Game is completed, ${this.getWinner()} wins.`);
         this.isGamePlayable = false;
         this.boardContainer.isClickable = false;
     }
 
     private onReset() {
+        this.preventEnd = false;
         this.isGamePlayable = true;
         this.moveStack = new MoveStack();
         this.player1.resetState();
@@ -150,6 +161,7 @@
     }
 
     private initialize(canvas) {
+        this.preventEnd = false;
         this.isGamePlayable = true;
         this.canvas = canvas;
         this.boardContainer = new BoardContainer(this.canvas);
@@ -198,7 +210,7 @@
         }
 
         this.player1 = new HumanPlayer(TeamIds.White, "Bob");
-        this.player2 = new ComputerPlayer(TeamIds.Black, this, "AlphaAlphaGo", new RandomMoveStrategy());
+        this.player2 = new ComputerPlayer(TeamIds.Black, this, "AlphaAlphaGo2", new RandomMoveStrategy());
         this.currentPlayer = this.player1;
     }
 

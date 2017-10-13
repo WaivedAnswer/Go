@@ -72,7 +72,7 @@
         return this.board.setStone(x, y, teamId);
     }
 
-    getAvailableMoves(currPlayer) {
+    getAvailableMoves(currPlayer : IPlayer) {
         
         const moveList = [];
         moveList.push(new PassMove(currPlayer));
@@ -87,7 +87,7 @@
     }
 
 
-    clickBoard(evt, currPlayer) {
+    clickBoard(evt, currPlayer : IPlayer) {
         if (!this.isClickable)
             return new NullMove();
         const pos = this.getCanvasMousePos(this.canvas, evt);

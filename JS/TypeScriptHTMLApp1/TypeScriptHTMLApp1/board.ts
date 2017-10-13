@@ -146,17 +146,12 @@
                 const adjGroup = new Array<Stone>();
                 adjGroup.push(adj);
                 this.findConnectedStones(adj, adjGroup);
-                console.log(`adjgroup is ${adjGroup.length} long`);
 
                 if (!this.doesGroupHaveLiberties(adjGroup)) {
                     capturedStones = capturedStones.concat(adjGroup);
-                    console.log(capturedStones.length, adjGroup.length);
-                } else {
-                    console.log("group is free!");
                 }
             }
         }
-        console.log(`There are${capturedStones.length} stones to capture`);
         return capturedStones;
     }
 
@@ -203,7 +198,6 @@
     }
 
     private removeGroupFromBoard(group) {
-        //console.log("removing " + group.length + " stones")
         for (let stone of group) {
             this.removeStoneFromBoard(stone);
         }
@@ -229,7 +223,6 @@
                 return false;
             } else {
                 this.removeGroupFromBoard(capturedStones);
-                //console.log("Captured Stones! and Stone Placed:" + x + "," + y);
                 this.lastCapturedStones = capturedStones;
                 move.player.score += this.lastCapturedStones.length;
                 this.lastStone = newStone;
@@ -301,7 +294,6 @@
 
     playMove(move) {
         if (this.isStonePlacementInvalid(move.boardCoordX, move.boardCoordY)) {
-            //console.log("Invalid Placement:" + x + "," + y);
             return false;
         }
         return this.updateBoardWithMove(move);

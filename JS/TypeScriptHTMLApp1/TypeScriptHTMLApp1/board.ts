@@ -254,20 +254,6 @@
         return (this.isOccupied(x, y) || !this.isWithinBounds(x, y));
     }
 
-    public getAvailableMoves(player) {
-        var moveList = [];
-        for (let i = 0; i < this.values.length; i++) {
-            for (let j = 0; j < this.values[i].length; j++) {
-                if (this.canPlaceStone(i, j, player.teamId, false))
-                {
-                    moveList.push(new Move(i, j, player));
-                }
-            }
-        }
-        return moveList;
-    }
-
-
     public isIllegalMove(x, y, teamId, shouldNotify){
         var newStone = new Stone(teamId);
 

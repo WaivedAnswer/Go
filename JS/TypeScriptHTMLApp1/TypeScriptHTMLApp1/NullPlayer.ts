@@ -11,9 +11,9 @@
     teamId: TeamIds;
     score: number;
     passState: boolean;
-    SetNextMove(move: Move) {
+    SetNextMove(move: IMove) {
     }
     GetNextMove() {
-        return NullMove;
+        return new NullMove();
     }
 }

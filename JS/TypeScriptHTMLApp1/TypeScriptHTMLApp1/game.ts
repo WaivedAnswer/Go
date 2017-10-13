@@ -6,7 +6,6 @@
     private Player1: IPlayer;
     private Player2: IPlayer;
     private CurrentPlayer: IPlayer;
-    private moveFailureCount: number;
     private moveStack: MoveStack;
 
     constructor(canvas) {
@@ -21,43 +20,27 @@
         this.SwitchPlayer();
     }
 
-    private OnMoveFailure() {
-        this.moveFailureCount++;
-        if (this.moveFailureCount > 3) {
-            this.moveFailureCount = 0;
-            this.OnPass();
-        }
-    }
 
     private OnMoveSuccess() {
-        this.CurrentPlayer.passState = false;
-        this.moveFailureCount = 0;
+        if (this.Player1.passState && this.Player2.passState) {
+            this.OnEndGame();
+        }
         this.SwitchPlayer();
     }
 
     public makeMove(move) {
-        if (move == PassMove) {
-            this.OnPass();
-            this.moveStack.push(move);
-        }
-        else if (move == UndoMove) {
+        if (move.IsUndo()) {
             this.OnUndo();
         }
-        else if (this.boardContainer.placeStone(move)) {
+        else if (move.Execute()) {
             this.OnMoveSuccess();
             this.moveStack.push(move);
-        }
-        else {
-            alert("Shouldn't here");
-            this.OnMoveFailure();
         }
     }
 
     public process() {
         var nextMove = this.CurrentPlayer.GetNextMove();
-        if (nextMove !== NullMove) {
-            this.makeMove(nextMove);
-        }
+        this.makeMove(nextMove);
     }
 
     public mainLoop = () => {
@@ -96,15 +79,6 @@
         this.CurrentPlayer.SetNextMove(this.boardContainer.clickBoard(evt, this.CurrentPlayer));
     }
 
-    private OnPass() {
-        this.moveFailureCount = 0;
-        this.CurrentPlayer.passState = true;
-        this.SwitchPlayer();
-        if (this.Player1.passState && this.Player2.passState) {
-            this.OnEndGame();
-        }
-    }
-
     private GetWinner() {
         if (this.Player1.score > this.Player2.score)
             return this.Player1.name;
@@ -126,24 +100,22 @@
         this.Player1.ResetState();
         this.Player2.ResetState();
         this.CurrentPlayer = this.Player1;
-        this.moveFailureCount = 0;
         this.boardContainer.resetGame();
     }
 
     private OnPassClick() {
         if (!this.CurrentPlayer.CanClickControl())
             return;
-        this.CurrentPlayer.SetNextMove(PassMove);
+        this.CurrentPlayer.SetNextMove(new PassMove(this.CurrentPlayer));
     }
 
     private OnUndoClick() {
         if (!this.CurrentPlayer.CanClickControl())
             return;
-        this.CurrentPlayer.SetNextMove(UndoMove);
+        this.CurrentPlayer.SetNextMove(new UndoMove());
     }
 
     private initialize(canvas) {
-        this.moveFailureCount = 0;
         this.canvas = canvas;
         this.boardContainer = new BoardContainer(this.canvas);
         this.moveStack = new MoveStack();
@@ -164,11 +136,12 @@
         }
         var bttn2 = document.getElementById("Button3");
         bttn2.onclick = () => {
-            this.OnUndo();
+            this.OnUndoClick();
         }
 
         this.Player1 = new HumanPlayer(TeamIds.White, "Bob");
-        this.Player2 = new ComputerPlayer(TeamIds.Black, this.boardContainer, "AlphaAlphaGo");
+        this.Player2 = new HumanPlayer(TeamIds.Black, "Bob2");
+        //this.Player2 = new ComputerPlayer(TeamIds.Black, this.boardContainer, "AlphaAlphaGo");
         this.CurrentPlayer = this.Player1;
     }
 }

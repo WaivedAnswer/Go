@@ -13,7 +13,7 @@
 
     GetNextMove() {
         var nextMove = this.nextMove;
-        this.nextMove = NullMove;
+        this.nextMove = new NullMove();
         return nextMove;
     }
 
@@ -27,7 +27,7 @@
     passState: boolean;
     teamId: TeamIds;
     score: number;
-    nextMove: Move;
+    nextMove: IMove;
 
     constructor(teamId, name) {
         this.initialize(teamId, name);
@@ -36,7 +36,7 @@
     initialize(teamId, name) {
         this.teamId = teamId;
         this.passState = false;
-        this.nextMove = NullMove;
+        this.nextMove = new NullMove();
         this.score = 0;
         this.name = name;
     }

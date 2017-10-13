@@ -1,4 +1,8 @@
-﻿class Move {
+﻿class Move implements IMove {
+    IsUndo() {
+        return false;
+    }
+
     boardCoordX: number;
     boardCoordY: number;
     player: IPlayer;
@@ -12,11 +16,15 @@
         this.boardContainer = boardContainer;
     }
 
+    Execute() {
+        if (this.boardContainer.placeStone(this)) {
+            this.player.passState = false;
+            return true;
+        }
+        return false;
+    }
+
     Undo() {
 
     }
 }
-
-var NullMove = new Move(-1, -1, new NullPlayer(), new BoardContainer(null));
-var PassMove = new Move(-2, -2, new NullPlayer(), new BoardContainer(null));
-var UndoMove = new Move(-3, -3, new NullPlayer(), new BoardContainer(null));

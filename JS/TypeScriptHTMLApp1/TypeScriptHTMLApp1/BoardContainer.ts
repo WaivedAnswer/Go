@@ -47,19 +47,28 @@
 
 
     getAvailableMoves(currPlayer) {
-        return this.board.getAvailableMoves(currPlayer);
+        
+        var moveList = [];
+        for (let i = 0; i < this.board.height; i++) {
+            for (let j = 0; j < this.board.width; j++) {
+                if (this.board.canPlaceStone(i, j, currPlayer.teamId, false)) {
+                    moveList.push(new Move(i, j, currPlayer, this));
+                }
+            }
+        }
+        return moveList;
     }
 
 
     clickBoard(evt, currPlayer) {
         if (!this.isClickable)
-            return NullMove;
+            return new NullMove();
         var pos = this.getCanvasMousePos(this.canvas, evt);
         var boardCoord = this.getBoardCoordinateFromCanvasCoordinates(pos, this.canvas);
         if (this.board.canPlaceStone(boardCoord.x, boardCoord.y, currPlayer.teamId, true)) {
             return new Move(boardCoord.x, boardCoord.y, currPlayer, this);
         }         
-        return NullMove;
+        return new NullMove();
     }
 
     resetGame() {

@@ -34,7 +34,7 @@
     GetNextMove() {
         var moves = this.boardContainer.getAvailableMoves(this);
         if (moves.length === 0) {
-            return PassMove;
+            return new PassMove(this);
         }
         return moves[Math.floor(Math.random() * moves.length)];
     }

@@ -31,13 +31,17 @@
     <TypeScriptCompile Include="BoardContainer.ts" />
     <TypeScriptCompile Include="ComputerPlayer.ts" />
     <TypeScriptCompile Include="game.ts" />
+    <TypeScriptCompile Include="IMove.ts" />
     <TypeScriptCompile Include="IPlayer.ts" />
     <TypeScriptCompile Include="Matrix.ts" />
     <TypeScriptCompile Include="HumanPlayer.ts" />
     <TypeScriptCompile Include="move.ts" />
     <TypeScriptCompile Include="MoveStack.ts" />
+    <TypeScriptCompile Include="NullMove.ts" />
     <TypeScriptCompile Include="NullPlayer.ts" />
+    <TypeScriptCompile Include="PassMove.ts" />
     <TypeScriptCompile Include="Stone.ts" />
+    <TypeScriptCompile Include="UndoMove.ts" />
   </ItemGroup>
   <ItemGroup>
     <None Include="web.Debug.config">

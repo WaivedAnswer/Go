@@ -35,6 +35,7 @@
     <TypeScriptCompile Include="Matrix.ts" />
     <TypeScriptCompile Include="HumanPlayer.ts" />
     <TypeScriptCompile Include="move.ts" />
+    <TypeScriptCompile Include="MoveStack.ts" />
     <TypeScriptCompile Include="NullPlayer.ts" />
     <TypeScriptCompile Include="Stone.ts" />
   </ItemGroup>

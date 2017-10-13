@@ -1,5 +1,5 @@
 ﻿class Game {
-    
+
     private boardContainer: BoardContainer;
     private canvas: HTMLCanvasElement;
     private scoreBoardCanvas: HTMLCanvasElement;
@@ -7,28 +7,49 @@
     private Player2: IPlayer;
     private CurrentPlayer: IPlayer;
     private moveFailureCount: number;
+    private moveStack: MoveStack;
 
     constructor(canvas) {
         this.initialize(canvas);
     }
 
+    private OnUndo() {
+        if (this.moveStack.isEmpty())
+            return;
+        var lastMove = this.moveStack.pop();
+        lastMove.Undo();
+        this.SwitchPlayer();
+    }
 
-    public makeMove(move) {
-        if (move == PassMove)
-        {
+    private OnMoveFailure() {
+        this.moveFailureCount++;
+        if (this.moveFailureCount > 3) {
+            this.moveFailureCount = 0;
             this.OnPass();
         }
+    }
+
+    private OnMoveSuccess() {
+        this.CurrentPlayer.passState = false;
+        this.moveFailureCount = 0;
+        this.SwitchPlayer();
+    }
+
+    public makeMove(move) {
+        if (move == PassMove) {
+            this.OnPass();
+            this.moveStack.push(move);
+        }
+        else if (move == UndoMove) {
+            this.OnUndo();
+        }
         else if (this.boardContainer.placeStone(move)) {
-            this.CurrentPlayer.passState = false;
-            this.moveFailureCount = 0;
-            this.SwitchPlayer();
+            this.OnMoveSuccess();
+            this.moveStack.push(move);
         }
         else {
-            this.moveFailureCount++;
-            if (this.moveFailureCount > 3) {
-                this.CurrentPlayer.passState = true;
-                this.SwitchPlayer();
-            }
+            alert("Shouldn't here");
+            this.OnMoveFailure();
         }
     }
 
@@ -76,6 +97,7 @@
     }
 
     private OnPass() {
+        this.moveFailureCount = 0;
         this.CurrentPlayer.passState = true;
         this.SwitchPlayer();
         if (this.Player1.passState && this.Player2.passState) {
@@ -83,12 +105,10 @@
         }
     }
 
-    private GetWinner()
-    {
+    private GetWinner() {
         if (this.Player1.score > this.Player2.score)
             return this.Player1.name;
-        else if ( this.Player1.score === this.Player2.score)
-        {
+        else if (this.Player1.score === this.Player2.score) {
             return "Nobody";
         }
         else {
@@ -102,6 +122,7 @@
     }
 
     private OnReset() {
+        this.moveStack = new MoveStack();
         this.Player1.ResetState();
         this.Player2.ResetState();
         this.CurrentPlayer = this.Player1;
@@ -109,11 +130,23 @@
         this.boardContainer.resetGame();
     }
 
-    private initialize(canvas)
-    {
+    private OnPassClick() {
+        if (!this.CurrentPlayer.CanClickControl())
+            return;
+        this.CurrentPlayer.SetNextMove(PassMove);
+    }
+
+    private OnUndoClick() {
+        if (!this.CurrentPlayer.CanClickControl())
+            return;
+        this.CurrentPlayer.SetNextMove(UndoMove);
+    }
+
+    private initialize(canvas) {
         this.moveFailureCount = 0;
         this.canvas = canvas;
         this.boardContainer = new BoardContainer(this.canvas);
+        this.moveStack = new MoveStack();
 
         this.scoreBoardCanvas = document.getElementById("scoreboardCanvas") as HTMLCanvasElement;
 
@@ -123,11 +156,15 @@
 
         var bttn = document.getElementById("Button1");
         bttn.onclick = () => {
-            this.OnPass();
+            this.OnPassClick();
         }
         var bttn2 = document.getElementById("Button2");
         bttn2.onclick = () => {
             this.OnReset();
+        }
+        var bttn2 = document.getElementById("Button3");
+        bttn2.onclick = () => {
+            this.OnUndo();
         }
 
         this.Player1 = new HumanPlayer(TeamIds.White, "Bob");

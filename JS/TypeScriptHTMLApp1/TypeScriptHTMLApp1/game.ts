@@ -166,7 +166,7 @@
         this.canvas = canvas;
         this.boardContainer = new BoardContainer(this.canvas);
         this.moveStack = new MoveStack();
-        this.currAiStrategy = new RandomMoveStrategy();
+        this.currAiStrategy = new CaptureMoveStrategy();
         this.scoreBoardCanvas = document.getElementById("scoreboardCanvas") as HTMLCanvasElement;
 
         canvas.addEventListener("click", evt => {
@@ -210,7 +210,7 @@
         }
 
         this.player1 = new HumanPlayer(TeamIds.White, "Bob");
-        this.player2 = new ComputerPlayer(TeamIds.Black, this, "AlphaAlphaGo2", new RandomMoveStrategy());
+        this.player2 = new ComputerPlayer(TeamIds.Black, this, "AlphaAlphaGo2", this.currAiStrategy);
         this.currentPlayer = this.player1;
     }
 

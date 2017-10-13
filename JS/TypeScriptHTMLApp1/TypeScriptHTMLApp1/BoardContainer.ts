@@ -75,6 +75,7 @@
     getAvailableMoves(currPlayer) {
         
         const moveList = [];
+        moveList.push(new PassMove(currPlayer));
         for (let i = 0; i < this.board.height; i++) {
             for (let j = 0; j < this.board.width; j++) {
                 if (this.board.canPlaceStone(i, j, currPlayer.teamId, false)) {

@@ -9,21 +9,21 @@
         return false;
     }
 
-    constructor(teamId, boardContainer, name) {
-        this.initialize(teamId, boardContainer, name);
+    constructor(teamId, game, name) {
+        this.initialize(teamId, game, name);
     }
 
-    initialize(teamId, boardContainer, name) {
+    initialize(teamId, game, name) {
         this.resetState();
         this.teamId = teamId;
-        this.boardContainer = boardContainer;
+        this.game = game;
         this.name = name;
     }
 
     teamId: TeamIds;
     score: number;
     passState: boolean;
-    boardContainer: BoardContainer;
+    game: Game;
     name: string;
 
 
@@ -32,7 +32,7 @@
     }
 
     getNextMove() {
-        const moves = this.boardContainer.getAvailableMoves(this);
+        const moves = this.game.getAvailableMoves(this);
         if (moves.length === 0) {
             return new PassMove(this);
         }

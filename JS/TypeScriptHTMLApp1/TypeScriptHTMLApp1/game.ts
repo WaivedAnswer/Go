@@ -29,6 +29,10 @@
         this.switchPlayer();
     }
 
+    getAvailableMoves(player) {
+        return this.boardContainer.getAvailableMoves(player);
+    }
+
     makeMove(move) {
         if (move.execute()) {
             this.onMoveSuccess(move);
@@ -112,6 +116,13 @@
         this.undo();
     }
 
+    private onDoubleUndoClick() {
+        if (!this.currentPlayer.canClickControl())
+            return;
+        this.undo();
+        this.undo();
+    }
+
     private initialize(canvas) {
         this.canvas = canvas;
         this.boardContainer = new BoardContainer(this.canvas);
@@ -136,9 +147,14 @@
             this.onUndoClick();
         }
 
+        const bttn4 = document.getElementById("Button4");
+        bttn4.onclick = () => {
+            this.onDoubleUndoClick();
+        }
+
         this.player1 = new HumanPlayer(TeamIds.White, "Bob");
-        this.player2 = new HumanPlayer(TeamIds.Black, "Bob2");
-        //this.Player2 = new ComputerPlayer(TeamIds.Black, this.boardContainer, "AlphaAlphaGo");
+        //this.player2 = new HumanPlayer(TeamIds.Black, "Bob2");
+        this.player2 = new ComputerPlayer(TeamIds.Black, this, "AlphaAlphaGo");
         this.currentPlayer = this.player1;
     }
 }

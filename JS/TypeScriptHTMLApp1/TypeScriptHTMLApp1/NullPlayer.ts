@@ -1,4 +1,9 @@
 ﻿class NullPlayer implements IPlayer {
+    setStrategy(strategy: IMoveStrategy) {}
+
+    isAi() {
+        return false;
+    }
 
     name: string;
 

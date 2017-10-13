@@ -1,5 +1,9 @@
 ﻿class HumanPlayer implements IPlayer {
+    setStrategy(strategy: IMoveStrategy) {}
 
+    isAi() {
+        return false;
+    }
 
     resetState() {
         this.score = 0;

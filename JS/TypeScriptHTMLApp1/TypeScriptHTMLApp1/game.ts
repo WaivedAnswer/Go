@@ -7,6 +7,8 @@
     private player2: IPlayer;
     private currentPlayer: IPlayer;
     private moveStack: MoveStack;
+    private isGamePlayable: boolean;
+    private currAiStrategy: IMoveStrategy;
 
     constructor(canvas) {
         this.initialize(canvas);
@@ -40,6 +42,8 @@
     }
 
     process() {
+        if (!this.isGamePlayable)
+            return;
         const nextMove = this.currentPlayer.getNextMove();
         this.makeMove(nextMove);
     }
@@ -65,13 +69,15 @@
         ctx.fillText(this.player2.name + " Score: " + this.player2.score, 8, 60);
     }
 
+    getOpponent(player) {
+        if (player === this.player1) {
+            return this.player2;
+        }
+        return this.player1;
+    }
+
     private switchPlayer() {
-        if (this.currentPlayer === this.player1) {
-            this.currentPlayer = this.player2;
-        }
-        else {
-            this.currentPlayer = this.player1;
-        }
+        this.currentPlayer = this.getOpponent(this.currentPlayer);
     }
 
     private handleBoardClick(evt) {
@@ -93,10 +99,12 @@
 
     private onEndGame() {
         alert(`Game is completed, ${this.getWinner()} wins.`);
+        this.isGamePlayable = false;
         this.boardContainer.isClickable = false;
     }
 
     private onReset() {
+        this.isGamePlayable = true;
         this.moveStack = new MoveStack();
         this.player1.resetState();
         this.player2.resetState();
@@ -123,11 +131,30 @@
         this.undo();
     }
 
+    onPlayer1AI() {
+        if (!this.player1.isAi()) {
+            this.player1 = new ComputerPlayer(TeamIds.White, this, "AlphaAlphaGo", this.currAiStrategy);
+        } else {
+            this.player1 = new HumanPlayer(TeamIds.White, "Bob");
+        }
+        this.onReset();
+    }
+
+    onPlayer2AI() {
+        if (!this.player2.isAi()) {
+            this.player2 = new ComputerPlayer(TeamIds.Black, this, "AlphaAlphaGo2", this.currAiStrategy);
+        } else {
+            this.player2 = new HumanPlayer(TeamIds.Black, "Bob2");
+        }
+        this.onReset();
+    }
+
     private initialize(canvas) {
+        this.isGamePlayable = true;
         this.canvas = canvas;
         this.boardContainer = new BoardContainer(this.canvas);
         this.moveStack = new MoveStack();
-
+        this.currAiStrategy = new RandomMoveStrategy();
         this.scoreBoardCanvas = document.getElementById("scoreboardCanvas") as HTMLCanvasElement;
 
         canvas.addEventListener("click", evt => {
@@ -151,10 +178,42 @@
         bttn4.onclick = () => {
             this.onDoubleUndoClick();
         }
+        const bttn5 = document.getElementById("Button5");
+        bttn5.onclick = () => {
+            this.onPlayer1AI();
+        }
+        const bttn6 = document.getElementById("Button6");
+        bttn6.onclick = () => {
+            this.onPlayer2AI();
+        }
+
+        const bttn7 = document.getElementById("Button7");
+        bttn7.onclick = () => {
+            this.onRandomAI();
+        }
+
+        const bttn8 = document.getElementById("Button8");
+        bttn8.onclick = () => {
+            this.onCaptureAI();
+        }
 
         this.player1 = new HumanPlayer(TeamIds.White, "Bob");
-        //this.player2 = new HumanPlayer(TeamIds.Black, "Bob2");
-        this.player2 = new ComputerPlayer(TeamIds.Black, this, "AlphaAlphaGo");
+        this.player2 = new HumanPlayer(TeamIds.Black, "Bob2");
+
+        //this.player1 = new ComputerPlayer(TeamIds.White, this, "AlphaAlphaGo1", new RandomMoveStrategy());
+        //this.player2 = new ComputerPlayer(TeamIds.Black, this, "AlphaAlphaGo", new RandomMoveStrategy());
         this.currentPlayer = this.player1;
+    }
+
+    onRandomAI() {
+        this.currAiStrategy = new RandomMoveStrategy();
+        this.player1.setStrategy(this.currAiStrategy);
+        this.player2.setStrategy(this.currAiStrategy);
+    }
+
+    onCaptureAI() {
+        this.currAiStrategy = new RandomMoveStrategy();
+        this.player1.setStrategy(this.currAiStrategy);
+        this.player2.setStrategy(this.currAiStrategy);
     }
 }

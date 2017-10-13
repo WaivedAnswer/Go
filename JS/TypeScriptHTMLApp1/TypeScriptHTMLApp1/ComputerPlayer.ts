@@ -1,5 +1,18 @@
 ﻿class ComputerPlayer implements IPlayer {
+    setStrategy(strategy: IMoveStrategy) {
+        this.moveStrategy = strategy;
+    }
 
+    teamId: TeamIds;
+    score: number;
+    passState: boolean;
+    game: Game;
+    name: string;
+    moveStrategy: IMoveStrategy;
+
+    isAi() {
+        return true;
+    }
     resetState() {
         this.score = 0;
         this.passState = false;
@@ -9,22 +22,18 @@
         return false;
     }
 
-    constructor(teamId, game, name) {
-        this.initialize(teamId, game, name);
+    constructor(teamId, game, name, strategy) {
+        this.initialize(teamId, game, name, strategy);
     }
 
-    initialize(teamId, game, name) {
+    initialize(teamId, game, name, strategy) {
         this.resetState();
         this.teamId = teamId;
         this.game = game;
         this.name = name;
+        this.moveStrategy = strategy;
     }
 
-    teamId: TeamIds;
-    score: number;
-    passState: boolean;
-    game: Game;
-    name: string;
 
 
     setNextMove(move: Move) {
@@ -32,11 +41,7 @@
     }
 
     getNextMove() {
-        const moves = this.game.getAvailableMoves(this);
-        if (moves.length === 0) {
-            return new PassMove(this);
-        }
-        return moves[Math.floor(Math.random() * moves.length)];
+        return this.moveStrategy.chooseBestMove(this.game, this, this.game.getOpponent(this));
     }
 
 

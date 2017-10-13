@@ -32,6 +32,7 @@
     <TypeScriptCompile Include="ComputerPlayer.ts" />
     <TypeScriptCompile Include="game.ts" />
     <TypeScriptCompile Include="IMove.ts" />
+    <TypeScriptCompile Include="IMoveStrategy.ts" />
     <TypeScriptCompile Include="IPlayer.ts" />
     <TypeScriptCompile Include="Matrix.ts" />
     <TypeScriptCompile Include="HumanPlayer.ts" />
@@ -41,6 +42,7 @@
     <TypeScriptCompile Include="NullMove.ts" />
     <TypeScriptCompile Include="NullPlayer.ts" />
     <TypeScriptCompile Include="PassMove.ts" />
+    <TypeScriptCompile Include="RandomMoveStrategy.ts" />
     <TypeScriptCompile Include="Stone.ts" />
   </ItemGroup>
   <ItemGroup>

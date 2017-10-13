@@ -29,6 +29,7 @@
     <TypeScriptCompile Include="app.ts" />
     <TypeScriptCompile Include="board.ts" />
     <TypeScriptCompile Include="BoardContainer.ts" />
+    <TypeScriptCompile Include="CaptureMoveStrategy.ts" />
     <TypeScriptCompile Include="ComputerPlayer.ts" />
     <TypeScriptCompile Include="game.ts" />
     <TypeScriptCompile Include="IMove.ts" />

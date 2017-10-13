@@ -198,10 +198,7 @@
         }
 
         this.player1 = new HumanPlayer(TeamIds.White, "Bob");
-        this.player2 = new HumanPlayer(TeamIds.Black, "Bob2");
-
-        //this.player1 = new ComputerPlayer(TeamIds.White, this, "AlphaAlphaGo1", new RandomMoveStrategy());
-        //this.player2 = new ComputerPlayer(TeamIds.Black, this, "AlphaAlphaGo", new RandomMoveStrategy());
+        this.player2 = new ComputerPlayer(TeamIds.Black, this, "AlphaAlphaGo", new RandomMoveStrategy());
         this.currentPlayer = this.player1;
     }
 
@@ -212,7 +209,7 @@
     }
 
     onCaptureAI() {
-        this.currAiStrategy = new RandomMoveStrategy();
+        this.currAiStrategy = new CaptureMoveStrategy();
         this.player1.setStrategy(this.currAiStrategy);
         this.player2.setStrategy(this.currAiStrategy);
     }

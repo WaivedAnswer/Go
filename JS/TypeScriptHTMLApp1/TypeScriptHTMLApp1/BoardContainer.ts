@@ -1,5 +1,4 @@
 ﻿class BoardContainer {
-
     private board: Board;
     private currStone: Stone;
     private passCount: number;
@@ -12,7 +11,7 @@
     }
 
     private resetBoardContainer() {
-        this.board = new Board(6, 6);
+        this.board = new Board(ContainerBoardHeight, ContainerBoardWidth);
         this.currStone = new Stone(TeamIds.Black);
         this.passCount = 0;
         this.isClickable = true;
@@ -103,3 +102,6 @@
         this.displayBoard();
     }
 }
+
+var ContainerBoardHeight = 6;
+var ContainerBoardWidth = 6;

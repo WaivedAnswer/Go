@@ -143,21 +143,25 @@
     }
 
     onPlayer1AI() {
+        let score = this.player1.score;
         if (!this.player1.isAi()) {
             this.player1 = new ComputerPlayer(TeamIds.White, this, "AlphaAlphaGo", this.currAiStrategy);
         } else {
             this.player1 = new HumanPlayer(TeamIds.White, "Bob");
         }
-        this.onReset();
+        this.player1.score = score;
+        //this.onReset();
     }
 
     onPlayer2AI() {
+        let score = this.player2.score;
         if (!this.player2.isAi()) {
             this.player2 = new ComputerPlayer(TeamIds.Black, this, "AlphaAlphaGo2", this.currAiStrategy);
         } else {
             this.player2 = new HumanPlayer(TeamIds.Black, "Bob2");
         }
-        this.onReset();
+        this.player2.score = score;
+        //this.onReset();
     }
 
     private initialize(canvas) {

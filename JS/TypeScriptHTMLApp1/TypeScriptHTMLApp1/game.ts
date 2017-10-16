@@ -170,7 +170,7 @@
         this.canvas = canvas;
         this.boardContainer = new BoardContainer(this.canvas);
         this.moveStack = new MoveStack();
-        this.currAiStrategy = new CaptureMoveStrategy();
+        this.currAiStrategy = new RandomMoveStrategy();
         this.scoreBoardCanvas = document.getElementById("scoreboardCanvas") as HTMLCanvasElement;
 
         canvas.addEventListener("click", evt => {

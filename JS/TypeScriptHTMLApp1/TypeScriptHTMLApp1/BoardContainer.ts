@@ -12,7 +12,7 @@
     }
 
     private resetBoardContainer() {
-        this.board = new Board(5, 5); 
+        this.board = new Board(6, 6);
         this.currStone = new Stone(TeamIds.Black);
         this.passCount = 0;
         this.isClickable = true;
